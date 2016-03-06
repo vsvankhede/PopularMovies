@@ -1,6 +1,7 @@
 package com.vstechlab.popularmovies.data;
 
 
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.vstechlab.popularmovies.data.entity.MovieList;
@@ -13,7 +14,7 @@ import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 
 public class MoviesDataStore implements MoviesRepository {
-    private final String API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXX";
+    private final String API_KEY = "42940bbff0d5d9073a2800563a42925d";
     private final MoviesApi mMoviesApi;
 
     public MoviesDataStore() {
@@ -25,7 +26,7 @@ public class MoviesDataStore implements MoviesRepository {
 
         okClient.interceptors().add(signingInterceptor);
         okClient.interceptors().add(loggingInterceptor);
-
+        okClient.networkInterceptors().add(new StethoInterceptor());
         Retrofit movieApiAdapter = new Retrofit.Builder()
                 .baseUrl(MoviesApi.BASE_URL)
                 .client(okClient)

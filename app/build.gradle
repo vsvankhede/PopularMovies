@@ -32,4 +32,8 @@ dependencies {
 
     // Picasso
     compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+
+    // Debug compile
+    debugCompile "com.facebook.stetho:stetho:$rootProject.stethoVersion"
+    debugCompile "com.facebook.stetho:stetho-okhttp:$rootProject.stethoOkhttpVersion"
 }
