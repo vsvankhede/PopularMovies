@@ -1,9 +1,9 @@
 package com.vstechlab.popularmovies.data.db;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 
@@ -76,6 +76,35 @@ public class TestDb extends AndroidTestCase {
        favorite movies table.
      */
     public void testFavoriteMoviesTable() {
+        SQLiteDatabase db = new MoviesDbHelper(mContext).getWritableDatabase();
 
+        ContentValues testValues = TestUtilities.createMovieValues(22, mContext);
+
+        long movieRowId;
+        movieRowId = db.insert(FavoriteMovies.TABLE_NAME, null, testValues);
+
+        // Verify we got a row back
+        assertTrue(movieRowId != -1);
+
+        Cursor c = db.query(
+                FavoriteMovies.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertTrue("Error: no record returns from favorite movies entry", c.moveToFirst());
+
+        TestUtilities.validateCurrentRecord("Error: Favorite movies Query Validation Failed",
+                c, testValues);
+
+        assertFalse("Error: More than one record returned from location query",
+                c.moveToNext());
+
+        c.close();
+        db.close();
     }
 }
