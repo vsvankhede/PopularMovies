@@ -11,4 +11,8 @@
     <string name="hint_release_date">DD/MM/YYYY</string>
     <string name="poster">Movie Poster</string>
     <string name="hint_overview">Overview</string>
+    <string name="action_favorite">Favorite</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

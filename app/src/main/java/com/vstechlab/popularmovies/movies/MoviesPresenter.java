@@ -1,14 +1,16 @@
 package com.vstechlab.popularmovies.movies;
 
-import android.preference.PreferenceManager;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.vstechlab.popularmovies.FavoriteMoviesAdapter;
 import com.vstechlab.popularmovies.data.MoviesRepository;
+import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.data.entity.MovieList;
 import com.vstechlab.popularmovies.data.net.MoviesApi;
 import com.vstechlab.popularmovies.utils.PreferenceHelper;
-
-import java.io.IOException;
 
 import retrofit.Call;
 import retrofit.Callback;

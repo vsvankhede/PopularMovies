@@ -1,11 +1,8 @@
 package com.vstechlab.popularmovies.movies;
 
 import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,18 +14,19 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.vstechlab.popularmovies.FavoriteMoviesAdapter;
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.data.net.MoviesApi;
 import com.vstechlab.popularmovies.movie.MovieActivity;
 import com.vstechlab.popularmovies.utils.PreferenceHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vstechlab.popularmovies.data.db.MoviesContract.*;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -101,7 +99,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
         // Todo get data from shared preference
         if (getSortPreference().equals(MoviesApi.sortByPopularity)) {
             mUserActionListener.loadMoviesSortByPopularity();
-        } else {
+        } else if (getSortPreference().equals(MoviesApi.sortByHighRated)) {
             mUserActionListener.loadMoviesSortByRatting();
         }
     }
@@ -124,11 +122,19 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
     @Override
     public void updateMenu() {
         if (getSortPreference().equals(MoviesApi.sortByPopularity)) {
+
             mMenu.findItem(R.id.action_sort_popular).setVisible(false);
             mMenu.findItem(R.id.action_sort_rate).setVisible(true);
+            mMenu.findItem(R.id.action_favorite).setVisible(true);
+        } else if (getSortPreference().equals(MoviesApi.sortByHighRated)) {
+
+            mMenu.findItem(R.id.action_sort_popular).setVisible(true);
+            mMenu.findItem(R.id.action_favorite).setVisible(true);
+            mMenu.findItem(R.id.action_sort_rate).setVisible(false);
         } else {
             mMenu.findItem(R.id.action_sort_popular).setVisible(true);
-            mMenu.findItem(R.id.action_sort_rate).setVisible(false);
+            mMenu.findItem(R.id.action_sort_rate).setVisible(true);
+            mMenu.findItem(R.id.action_favorite).setVisible(false);
         }
     }
 

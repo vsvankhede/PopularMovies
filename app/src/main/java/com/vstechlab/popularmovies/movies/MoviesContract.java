@@ -1,5 +1,10 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.content.Context;
+import android.net.Uri;
+import android.widget.CursorAdapter;
+
+import com.vstechlab.popularmovies.FavoriteMoviesAdapter;
 import com.vstechlab.popularmovies.LoadDataView;
 import com.vstechlab.popularmovies.Presenter;
 import com.vstechlab.popularmovies.data.entity.Movie;
@@ -20,12 +25,19 @@ public interface MoviesContract {
         void updateMenu();
     }
 
+    interface FavoriteMoviesView extends LoadDataView {
+        void showMovies(FavoriteMoviesAdapter favoriteMoviesAdapter);
+        void updateMenu();
+    }
+
     interface UserActionListener extends Presenter {
-
         void loadMoviesSortByPopularity();
-
         void loadMoviesSortByRatting();
-
         void openMovieDetails();
+    }
+
+    interface FavoriteMoviesUserActionListener extends Presenter {
+        void loadFavoriteMovies(Uri favoriteMoviesUri);
+        void openMoviesDetails();
     }
 }
