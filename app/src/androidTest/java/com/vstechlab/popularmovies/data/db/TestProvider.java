@@ -1,11 +1,15 @@
 package com.vstechlab.popularmovies.data.db;
 
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.test.AndroidTestCase;
 
+import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.movie.MovieContract;
 
 import java.security.Provider;
@@ -16,7 +20,7 @@ public class TestProvider extends AndroidTestCase {
         MoviesDbHelper dbHelper = new MoviesDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        db.delete(MoviesContract.FavoriteMovies.TABLE_NAME, null, null);
+        db.delete(FavoriteMovies.TABLE_NAME, null, null);
         db.close();
     }
 
@@ -50,14 +54,31 @@ public class TestProvider extends AndroidTestCase {
     }
 
     public void testGetType() {
-        String type = mContext.getContentResolver().getType(MoviesContract.FavoriteMovies.CONTENT_URI);
+        String type = mContext.getContentResolver().getType(FavoriteMovies.CONTENT_URI);
 
-        assertEquals("Error: the Favorite CONTENT_URI should return " + MoviesContract.FavoriteMovies.CONTENT_TYPE,
-                MoviesContract.FavoriteMovies.CONTENT_TYPE, type);
+        assertEquals("Error: the Favorite CONTENT_URI should return " + FavoriteMovies.CONTENT_TYPE,
+                FavoriteMovies.CONTENT_TYPE, type);
     }
 
     public void testBasicFavoriteMoviesQuery() {
         MoviesDbHelper dbHelper = new MoviesDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = TestUtilities.createFavoriteMovieValues(mContext);
+        long favoriteMovieRowId = TestUtilities.insertFavoriteMovieValues(mContext);
+
+        Cursor favoriteMovieCursor = mContext.getContentResolver().query(
+                FavoriteMovies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        TestUtilities.validateCursor("testBasicFavoriteMovieQuert, favorite movie query", favoriteMovieCursor, values);
+
+        if ( Build.VERSION.SDK_INT >= 19 ) {
+            assertEquals("Error: Location Query did not properly set NotificationUri",
+                    favoriteMovieCursor.getNotificationUri(), FavoriteMovies.CONTENT_URI);
+        }
     }
 }

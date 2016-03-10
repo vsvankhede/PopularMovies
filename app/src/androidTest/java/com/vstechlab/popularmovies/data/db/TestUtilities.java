@@ -3,11 +3,13 @@ package com.vstechlab.popularmovies.data.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.R;
+import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.utils.Utils;
 
 import java.util.Date;
@@ -22,6 +24,7 @@ import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.
 import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.COLUMN_VOTE_AVG;
 
 public class TestUtilities extends AndroidTestCase{
+    private static final int DUMMY_MOVIE_ROW_ID = 201;
     private static final String DUMMY_SUMMARY = "dummy summery of movie";
     private static final String DUMMY_TITLE = "Avenger";
     private static final double DUMMY_RATING_AVG = 7.5;
@@ -33,15 +36,21 @@ public class TestUtilities extends AndroidTestCase{
             int idx = valueCursor.getColumnIndex(columnName);
             assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
-            if (columnName == MoviesContract.FavoriteMovies.COLUMN_POSTER) {
+            if (columnName == FavoriteMovies.COLUMN_POSTER) {
                 // Todo test blob
                 //assertEquals("Value '" + valueCursor.getBlob(idx).toString() + "' did not match the expected value '"
                   //      + expectedValue +"'", expectedValue, valueCursor.getBlob(idx).toString());
             } else {
-                assertEquals("Value '" + valueCursor.getString(idx) + "' did not match the expected value '"
+                assertEquals(columnName + ": Value '" + valueCursor.getString(idx) + "' did not match the expected value '"
                         + expectedValue +"'", expectedValue, valueCursor.getString(idx));
             }
         }
+    }
+
+    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+        assertTrue("Emptry cursor returned." + error, valueCursor.moveToFirst());
+        validateCurrentRecord(error, valueCursor, expectedValues);
+        valueCursor.close();
     }
 
     static ContentValues createMovieValues(int movieRowId, Context context) {
@@ -54,6 +63,30 @@ public class TestUtilities extends AndroidTestCase{
         movieValues.put(COLUMN_VOTE_AVG, DUMMY_RATING_AVG);
 
         return movieValues;
+    }
+
+    static ContentValues createFavoriteMovieValues(Context context) {
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(COLUMN_MOVIE_KEY, DUMMY_MOVIE_ROW_ID);
+        movieValues.put(COLUMN_POSTER, Utils.bitmapToByteArray(getBitmap(context)));
+        movieValues.put(COLUMN_RELEASE_DATE, new Date().getDate());
+        movieValues.put(COLUMN_SUMMARY, DUMMY_SUMMARY);
+        movieValues.put(COLUMN_TITLE, DUMMY_TITLE);
+        movieValues.put(COLUMN_VOTE_AVG, DUMMY_RATING_AVG);
+
+        return movieValues;
+    }
+
+    static long insertFavoriteMovieValues(Context context) {
+        MoviesDbHelper dbHelper = new MoviesDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues testValues = TestUtilities.createFavoriteMovieValues(context);
+
+        long favoriteMovieRowId = db.insert(FavoriteMovies.TABLE_NAME, null, testValues);
+
+        assertTrue("Error: Failure to insert Favorite movie values", favoriteMovieRowId != -1);
+
+        return favoriteMovieRowId;
     }
 
     static Bitmap getBitmap(Context context) {

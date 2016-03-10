@@ -23,6 +23,11 @@
             android:name=".movie.MovieActivity"
             android:label="@string/title_activity_movie" >
         </activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.db.MoviesProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>
