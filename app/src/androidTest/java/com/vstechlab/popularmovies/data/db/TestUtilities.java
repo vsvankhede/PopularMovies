@@ -2,14 +2,19 @@ package com.vstechlab.popularmovies.data.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
+import com.vstechlab.popularmovies.utils.PollingCheck;
 import com.vstechlab.popularmovies.utils.Utils;
 
 import java.util.Date;
@@ -82,6 +87,7 @@ public class TestUtilities extends AndroidTestCase{
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createFavoriteMovieValues(context);
 
+
         long favoriteMovieRowId = db.insert(FavoriteMovies.TABLE_NAME, null, testValues);
 
         assertTrue("Error: Failure to insert Favorite movie values", favoriteMovieRowId != -1);
@@ -92,5 +98,46 @@ public class TestUtilities extends AndroidTestCase{
     static Bitmap getBitmap(Context context) {
         return BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
+    }
+
+    static class TestContentObserver extends ContentObserver {
+        final HandlerThread mHT;
+        boolean mContentChanged;
+
+        static TestContentObserver getTestContentObserver() {
+            HandlerThread ht = new HandlerThread("ContentObserverThread");
+            ht.start();
+            return new TestContentObserver(ht);
+        }
+
+        public TestContentObserver(HandlerThread ht) {
+            super(new Handler(ht.getLooper()));
+            this.mHT = ht;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mContentChanged = true;
+        }
+
+        public void waitForNotificationOrFail() {
+            new PollingCheck(5000){
+
+                @Override
+                protected boolean check() {
+                    return mContentChanged;
+                }
+            }.run();
+            mHT.quit();
+        }
+    }
+
+    static TestContentObserver getTestContentObserver() {
+        return TestContentObserver.getTestContentObserver();
     }
 }

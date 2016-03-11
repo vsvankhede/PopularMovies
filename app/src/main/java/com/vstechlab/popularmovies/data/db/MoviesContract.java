@@ -34,5 +34,9 @@ public class MoviesContract {
         public static final String COLUMN_POSTER = "poster";
         public static final String COLUMN_SUMMARY = "summary";
         public static final String COLUMN_VOTE_AVG = "vote_avg";
+
+        public static Uri buildFavoriteMovieUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 }

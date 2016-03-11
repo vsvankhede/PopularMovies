@@ -86,7 +86,7 @@ public class MoviesProvider extends ContentProvider {
             case FAVORITE:
                 long _id = db.insert(MoviesContract.FavoriteMovies.TABLE_NAME, null, values);
                 if ( _id > 0)
-                    returnUri = MoviesContract.FavoriteMovies.CONTENT_URI;
+                    returnUri = MoviesContract.FavoriteMovies.buildFavoriteMovieUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

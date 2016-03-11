@@ -1,18 +1,19 @@
 package com.vstechlab.popularmovies.data.db;
 
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
-import com.vstechlab.popularmovies.movie.MovieContract;
 
-import java.security.Provider;
+import static com.vstechlab.popularmovies.data.db.TestUtilities.TestContentObserver.getTestContentObserver;
 
 public class TestProvider extends AndroidTestCase {
 
@@ -61,9 +62,6 @@ public class TestProvider extends AndroidTestCase {
     }
 
     public void testBasicFavoriteMoviesQuery() {
-        MoviesDbHelper dbHelper = new MoviesDbHelper(mContext);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
         ContentValues values = TestUtilities.createFavoriteMovieValues(mContext);
         long favoriteMovieRowId = TestUtilities.insertFavoriteMovieValues(mContext);
 
@@ -80,5 +78,32 @@ public class TestProvider extends AndroidTestCase {
             assertEquals("Error: Location Query did not properly set NotificationUri",
                     favoriteMovieCursor.getNotificationUri(), FavoriteMovies.CONTENT_URI);
         }
+    }
+
+    public void testInsertFavoriteMovieProvider() {
+        ContentValues testValues = TestUtilities.createFavoriteMovieValues(mContext);
+
+        TestUtilities.TestContentObserver tco = getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(FavoriteMovies.CONTENT_URI, true, tco);
+        Uri uri = mContext.getContentResolver().insert(FavoriteMovies.CONTENT_URI, testValues);
+
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        long favoriteMovieRowId = ContentUris.parseId(uri);
+
+        assertTrue(favoriteMovieRowId != -1);
+
+        Cursor cursor = mContext.getContentResolver().query(
+                FavoriteMovies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        TestUtilities.validateCursor("testInsertFavoriteMovieProvider. Error validating Favorite movie entery.",
+                cursor, testValues);
+
+
     }
 }
