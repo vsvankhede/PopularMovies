@@ -18,7 +18,7 @@ public class FavoriteMoviesPresenter implements MoviesContract.FavoriteMoviesUse
 
 
     @Override
-    public void loadFavoriteMovies(Uri favoriteMoviesUri) {
+    public void loadFavoriteMovies() {
 
     }
 

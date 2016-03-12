@@ -52,7 +52,7 @@ public class TestUtilities extends AndroidTestCase{
         }
     }
 
-    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+    public static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
         assertTrue("Emptry cursor returned." + error, valueCursor.moveToFirst());
         validateCurrentRecord(error, valueCursor, expectedValues);
         valueCursor.close();
@@ -70,7 +70,7 @@ public class TestUtilities extends AndroidTestCase{
         return movieValues;
     }
 
-    static ContentValues createFavoriteMovieValues(Context context) {
+    public static ContentValues createFavoriteMovieValues(Context context) {
         ContentValues movieValues = new ContentValues();
         movieValues.put(COLUMN_MOVIE_KEY, DUMMY_MOVIE_ROW_ID);
         movieValues.put(COLUMN_POSTER, Utils.bitmapToByteArray(getBitmap(context)));
@@ -82,7 +82,7 @@ public class TestUtilities extends AndroidTestCase{
         return movieValues;
     }
 
-    static long insertFavoriteMovieValues(Context context) {
+    public static long insertFavoriteMovieValues(Context context) {
         MoviesDbHelper dbHelper = new MoviesDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createFavoriteMovieValues(context);
@@ -100,11 +100,11 @@ public class TestUtilities extends AndroidTestCase{
                 R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
     }
 
-    static class TestContentObserver extends ContentObserver {
+    public static class TestContentObserver extends ContentObserver {
         final HandlerThread mHT;
         boolean mContentChanged;
 
-        static TestContentObserver getTestContentObserver() {
+        public static TestContentObserver getTestContentObserver() {
             HandlerThread ht = new HandlerThread("ContentObserverThread");
             ht.start();
             return new TestContentObserver(ht);

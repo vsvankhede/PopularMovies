@@ -37,7 +37,7 @@ public interface MoviesContract {
     }
 
     interface FavoriteMoviesUserActionListener extends Presenter {
-        void loadFavoriteMovies(Uri favoriteMoviesUri);
+        void loadFavoriteMovies();
         void openMoviesDetails();
     }
 }
