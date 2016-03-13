@@ -1,5 +1,6 @@
 package com.vstechlab.popularmovies.data.db;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -27,6 +28,25 @@ public class TestProvider extends AndroidTestCase {
 
     private void deleteAllRecords() {
         deleteAllRecordsFromDB();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void deleteAllRecordFromProvider() {
+        mContext.getContentResolver().delete(
+                FavoriteMovies.CONTENT_URI,
+                null,
+                null);
+
+        Cursor cursor = mContext.getContentResolver().query(
+                FavoriteMovies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertEquals("Error: Records not deleted from Favorite movies tables during delete", 0, cursor.getCount());
     }
 
     @Override
@@ -62,6 +82,7 @@ public class TestProvider extends AndroidTestCase {
     }
 
     public void testBasicFavoriteMoviesQuery() {
+
         ContentValues values = TestUtilities.createFavoriteMovieValues(mContext);
         long favoriteMovieRowId = TestUtilities.insertFavoriteMovieValues(mContext);
 
@@ -105,5 +126,18 @@ public class TestProvider extends AndroidTestCase {
                 cursor, testValues);
 
 
+    }
+
+    public void testDeleteRecord() {
+        testInsertFavoriteMovieProvider();
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(FavoriteMovies.CONTENT_URI, true,tco);
+
+        deleteAllRecordFromProvider();
+
+        tco.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(tco);
     }
 }
