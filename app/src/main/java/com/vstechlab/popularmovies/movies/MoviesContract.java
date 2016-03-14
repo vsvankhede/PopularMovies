@@ -1,5 +1,6 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.content.Context;
 import android.database.Cursor;
 
 import com.vstechlab.popularmovies.LoadDataView;
@@ -30,7 +31,7 @@ public interface MoviesContract {
     interface UserActionListener extends Presenter {
         void loadMoviesSortByPopularity();
         void loadMoviesSortByRatting();
-        void loadFavoriteMovies();
+        void loadFavoriteMovies(Context context);
         void openMovieDetails();
     }
 

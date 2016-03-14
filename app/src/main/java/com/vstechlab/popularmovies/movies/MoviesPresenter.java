@@ -1,5 +1,6 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -37,7 +38,7 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
 
                 MovieList movieList = response.body();
 
-                PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
+                PreferenceHelper.setMoviePreference(((MoviesFragment) mMoviesView).getActivity(),
                         MoviesApi.sortByPopularity);
                 mMoviesView.updateMenu();
                 mMoviesView.hideProgressIndicator();
@@ -62,7 +63,7 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
 
                 MovieList movieList = response.body();
 
-                PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
+                PreferenceHelper.setMoviePreference(((MoviesFragment) mMoviesView).getActivity(),
                         MoviesApi.sortByHighRated);
 
                 mMoviesView.updateMenu();
@@ -79,15 +80,10 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
     }
 
     @Override
-    public void loadFavoriteMovies() {
-        Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.CONTENT_URI;
+    public void loadFavoriteMovies(Context context) {
+//        Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.CONTENT_URI;
 
-        Cursor cur = ((MoviesFragment)mMoviesView).getActivity().getContentResolver().query(
-                favoriteMoviesUri,
-                null,
-                null,
-                null,
-                null);
+        Cursor cur = mMoviesRepository.getFavoriteMovies(context);
         PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
                 MoviesApi.favorite);
         mMoviesView.showFavoriteMovies(cur);

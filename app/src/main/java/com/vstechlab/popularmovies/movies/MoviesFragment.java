@@ -85,7 +85,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
                 mUserActionListener.loadMoviesSortByRatting();
                 return true;
             case R.id.action_favorite:
-                mUserActionListener.loadFavoriteMovies();
+                mUserActionListener.loadFavoriteMovies(getActivity());
                 return true;
         }
 
@@ -101,7 +101,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
         } else if (getMoviePreference().equals(MoviesApi.sortByHighRated)) {
             mUserActionListener.loadMoviesSortByRatting();
         } else if (getMoviePreference().equals(MoviesApi.favorite)) {
-            mUserActionListener.loadFavoriteMovies();
+            mUserActionListener.loadFavoriteMovies(getActivity());
         }
     }
 
