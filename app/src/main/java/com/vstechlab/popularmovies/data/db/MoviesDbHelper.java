@@ -25,7 +25,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 FavoriteMovies.COLUMN_MOVIE_KEY + " INTEGER NOT NULL," +
                 FavoriteMovies.COLUMN_TITLE + " TEXT NOT NULL," +
                 FavoriteMovies.COLUMN_RELEASE_DATE + " INTEGER NOT NULL," +
-                FavoriteMovies.COLUMN_POSTER + " BLOB NOT NULL," +
+                FavoriteMovies.COLUMN_POSTER + " TEXT NOT NULL," +
                 FavoriteMovies.COLUMN_SUMMARY + " TEXT NOT NULL," +
                 FavoriteMovies.COLUMN_VOTE_AVG + " NUMERIC NOT NULL," +
                 " UNIQUE (" + FavoriteMovies.COLUMN_MOVIE_KEY + ") ON CONFLICT REPLACE);";

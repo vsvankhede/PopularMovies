@@ -1,4 +1,4 @@
-package com.vstechlab.popularmovies;
+package com.vstechlab.popularmovies.moveis;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -7,12 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.db.MoviesDbHelper;
 import com.vstechlab.popularmovies.data.db.TestUtilities;
-import com.vstechlab.popularmovies.data.db.TestUtilities.TestContentObserver;
+import com.vstechlab.popularmovies.movies.FavoriteMoviesAdapter;
 
 public class FavoriteMoviesAdapterTest extends AndroidTestCase {
     private FavoriteMoviesAdapter mMovieAdapter;
@@ -62,7 +61,7 @@ public class FavoriteMoviesAdapterTest extends AndroidTestCase {
     }
 
     public void testGetItem() {
-
+        assertNotNull("Movies poster is not set to imageview", mMovieAdapter.getItem(0));
     }
 
     public void testBindView() {

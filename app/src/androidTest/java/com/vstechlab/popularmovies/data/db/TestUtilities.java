@@ -30,6 +30,7 @@ import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.
 
 public class TestUtilities extends AndroidTestCase{
     private static final int DUMMY_MOVIE_ROW_ID = 201;
+    private static final String DUMMY_POSTER_PATH = "http://image.tmdb.org/t/p/w185/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg";
     private static final String DUMMY_SUMMARY = "dummy summery of movie";
     private static final String DUMMY_TITLE = "Avenger";
     private static final double DUMMY_RATING_AVG = 7.5;
@@ -41,14 +42,8 @@ public class TestUtilities extends AndroidTestCase{
             int idx = valueCursor.getColumnIndex(columnName);
             assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
-            if (columnName == FavoriteMovies.COLUMN_POSTER) {
-                // Todo test blob
-                //assertEquals("Value '" + valueCursor.getBlob(idx).toString() + "' did not match the expected value '"
-                  //      + expectedValue +"'", expectedValue, valueCursor.getBlob(idx).toString());
-            } else {
-                assertEquals(columnName + ": Value '" + valueCursor.getString(idx) + "' did not match the expected value '"
+            assertEquals(columnName + ": Value '" + valueCursor.getString(idx) + "' did not match the expected value '"
                         + expectedValue +"'", expectedValue, valueCursor.getString(idx));
-            }
         }
     }
 
@@ -61,7 +56,7 @@ public class TestUtilities extends AndroidTestCase{
     static ContentValues createMovieValues(int movieRowId, Context context) {
         ContentValues movieValues = new ContentValues();
         movieValues.put(COLUMN_MOVIE_KEY, movieRowId);
-        movieValues.put(COLUMN_POSTER, Utils.bitmapToByteArray(getBitmap(context)));
+        movieValues.put(COLUMN_POSTER, DUMMY_POSTER_PATH);
         movieValues.put(COLUMN_RELEASE_DATE, new Date().getTime());
         movieValues.put(COLUMN_SUMMARY, DUMMY_SUMMARY);
         movieValues.put(COLUMN_TITLE, DUMMY_TITLE);
@@ -73,7 +68,7 @@ public class TestUtilities extends AndroidTestCase{
     public static ContentValues createFavoriteMovieValues(Context context) {
         ContentValues movieValues = new ContentValues();
         movieValues.put(COLUMN_MOVIE_KEY, DUMMY_MOVIE_ROW_ID);
-        movieValues.put(COLUMN_POSTER, Utils.bitmapToByteArray(getBitmap(context)));
+        movieValues.put(COLUMN_POSTER, DUMMY_POSTER_PATH);
         movieValues.put(COLUMN_RELEASE_DATE, new Date().getDate());
         movieValues.put(COLUMN_SUMMARY, DUMMY_SUMMARY);
         movieValues.put(COLUMN_TITLE, DUMMY_TITLE);
@@ -93,11 +88,6 @@ public class TestUtilities extends AndroidTestCase{
         assertTrue("Error: Failure to insert Favorite movie values", favoriteMovieRowId != -1);
 
         return favoriteMovieRowId;
-    }
-
-    static Bitmap getBitmap(Context context) {
-        return BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.abc_ic_menu_copy_mtrl_am_alpha);
     }
 
     public static class TestContentObserver extends ContentObserver {

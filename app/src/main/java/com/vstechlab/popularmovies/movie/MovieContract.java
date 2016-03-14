@@ -24,10 +24,13 @@ public interface MovieContract {
 
         void showReleaseDate(String date);
         void hideReleaseDate();
+
+        void showToast(String message);
     }
 
     interface UserActionListener extends Presenter {
 
         void loadMovieDetails(Movie movie);
+        void saveFavoriteMovie(Movie movie);
     }
 }

@@ -1,6 +1,6 @@
 package com.vstechlab.popularmovies.movies;
 
-import android.content.Context;
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,13 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.squareup.picasso.Picasso;
-import com.vstechlab.popularmovies.FavoriteMoviesAdapter;
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.data.net.MoviesApi;
@@ -25,8 +21,6 @@ import com.vstechlab.popularmovies.utils.PreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vstechlab.popularmovies.data.db.MoviesContract.*;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -38,6 +32,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
     private ProgressBar mProgressBar;
     private List<Movie> mMoviesList = new ArrayList<>();
     private MoviesAdapter mMoviesAdapter;
+    private FavoriteMoviesAdapter mFavoriteMoviesAdapter;
+    private GridView mGvMovies;
     private Menu mMenu;
 
     public MoviesFragment() {
@@ -50,9 +46,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
 
         mMoviesAdapter = new MoviesAdapter(getActivity(), mMoviesList);
 
-        GridView gv_movies = (GridView) view.findViewById(R.id.fragment_movies_gv_movies);
-        gv_movies.setAdapter(mMoviesAdapter);
-        gv_movies.setOnItemClickListener(movieClickListener);
+        mGvMovies = (GridView) view.findViewById(R.id.fragment_movies_gv_movies);
+        mGvMovies.setAdapter(mMoviesAdapter);
+        mGvMovies.setOnItemClickListener(movieClickListener);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.fragment_movies_pgr);
 
@@ -88,6 +84,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
             case R.id.action_sort_rate:
                 mUserActionListener.loadMoviesSortByRatting();
                 return true;
+            case R.id.action_favorite:
+                mUserActionListener.loadFavoriteMovies();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,21 +96,30 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
     public void onResume() {
         super.onResume();
         // Todo get data from shared preference
-        if (getSortPreference().equals(MoviesApi.sortByPopularity)) {
+        if (getMoviePreference().equals(MoviesApi.sortByPopularity)) {
             mUserActionListener.loadMoviesSortByPopularity();
-        } else if (getSortPreference().equals(MoviesApi.sortByHighRated)) {
+        } else if (getMoviePreference().equals(MoviesApi.sortByHighRated)) {
             mUserActionListener.loadMoviesSortByRatting();
+        } else if (getMoviePreference().equals(MoviesApi.favorite)) {
+            mUserActionListener.loadFavoriteMovies();
         }
     }
 
     @Override
     public void showMovies(List<Movie> movies) {
         mMoviesAdapter.setMovieList(movies);
+        if (mGvMovies.getAdapter() != mMoviesAdapter) mGvMovies.setAdapter(mMoviesAdapter);
     }
 
     @Override
     public void showMovieDetailUI(Movie movie) {
 
+    }
+
+    @Override
+    public void showFavoriteMovies(Cursor cursor) {
+        mFavoriteMoviesAdapter = new FavoriteMoviesAdapter(getActivity(), cursor, 0);
+        mGvMovies.setAdapter(mFavoriteMoviesAdapter);
     }
 
     @Override
@@ -121,17 +129,20 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
 
     @Override
     public void updateMenu() {
-        if (getSortPreference().equals(MoviesApi.sortByPopularity)) {
+        if (mMenu == null) return;
+
+        if (getMoviePreference().equals(MoviesApi.sortByPopularity)) {
 
             mMenu.findItem(R.id.action_sort_popular).setVisible(false);
             mMenu.findItem(R.id.action_sort_rate).setVisible(true);
             mMenu.findItem(R.id.action_favorite).setVisible(true);
-        } else if (getSortPreference().equals(MoviesApi.sortByHighRated)) {
+        } else if (getMoviePreference().equals(MoviesApi.sortByHighRated)) {
 
             mMenu.findItem(R.id.action_sort_popular).setVisible(true);
             mMenu.findItem(R.id.action_favorite).setVisible(true);
             mMenu.findItem(R.id.action_sort_rate).setVisible(false);
-        } else {
+        } else if (getMoviePreference().equals(MoviesApi.favorite)){
+
             mMenu.findItem(R.id.action_sort_popular).setVisible(true);
             mMenu.findItem(R.id.action_sort_rate).setVisible(true);
             mMenu.findItem(R.id.action_favorite).setVisible(false);
@@ -157,56 +168,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
         }
     };
 
-    private String getSortPreference() {
-        return PreferenceHelper.getSortPreference(getActivity());
-    }
-
-    private static class MoviesAdapter extends BaseAdapter {
-        private Context mContext;
-        private List<Movie> mMovieList;
-
-        public MoviesAdapter(Context mContext, List<Movie> movieList) {
-            this.mContext = mContext;
-            this.mMovieList = movieList;
-        }
-
-        @Override
-        public int getCount() {
-            return mMovieList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mMovieList.get(position);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            ImageView iv_movie;
-
-            if (view == null) {
-                iv_movie = new ImageView(mContext);
-                iv_movie.setAdjustViewBounds(true);
-            } else {
-                iv_movie = (ImageView) view;
-            }
-            String posterUrl = "http://image.tmdb.org/t/p/w185" + "/" + mMovieList.get(position).getPosterPath();
-            Picasso.with(mContext)
-                    .load(posterUrl)
-                    .resize(185, 278)
-                    .into(iv_movie);
-
-            return iv_movie;
-        }
-
-        public void setMovieList(List<Movie> movieList) {
-            mMovieList = movieList;
-            notifyDataSetChanged();
-        }
+    private String getMoviePreference() {
+        return PreferenceHelper.getMoviePreference(getActivity());
     }
 }

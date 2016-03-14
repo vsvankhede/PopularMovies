@@ -66,6 +66,7 @@ public class Movie implements Parcelable {
         popularity = in.readDouble();
         voteCount = in.readInt();
         voteAverage = in.readDouble();
+        id = in.readInt();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -347,5 +348,6 @@ public class Movie implements Parcelable {
         dest.writeDouble(popularity);
         dest.writeInt(voteCount);
         dest.writeDouble(voteAverage);
+        dest.writeInt(id);
     }
 }

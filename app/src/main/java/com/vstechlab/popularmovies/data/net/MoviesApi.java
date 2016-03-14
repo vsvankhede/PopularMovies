@@ -14,6 +14,7 @@ public interface MoviesApi {
 
     String sortByPopularity = "popularity.desc";
     String sortByHighRated = "vote_average.desc";
+    String favorite = "favorite";
 
     @GET("discover/movie")
     Call<MovieList> getMoviesSortByPopularity(@Query("sort_by") String sortByPopularity);

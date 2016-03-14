@@ -1,13 +1,10 @@
 package com.vstechlab.popularmovies.movies;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.vstechlab.popularmovies.FavoriteMoviesAdapter;
 import com.vstechlab.popularmovies.data.MoviesRepository;
-import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.data.entity.MovieList;
 import com.vstechlab.popularmovies.data.net.MoviesApi;
 import com.vstechlab.popularmovies.utils.PreferenceHelper;
@@ -40,7 +37,7 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
 
                 MovieList movieList = response.body();
 
-                PreferenceHelper.setSortPreference(((MoviesFragment)mMoviesView).getActivity(),
+                PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
                         MoviesApi.sortByPopularity);
                 mMoviesView.updateMenu();
                 mMoviesView.hideProgressIndicator();
@@ -65,7 +62,7 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
 
                 MovieList movieList = response.body();
 
-                PreferenceHelper.setSortPreference(((MoviesFragment)mMoviesView).getActivity(),
+                PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
                         MoviesApi.sortByHighRated);
 
                 mMoviesView.updateMenu();
@@ -79,6 +76,22 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
             }
         });
 
+    }
+
+    @Override
+    public void loadFavoriteMovies() {
+        Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.CONTENT_URI;
+
+        Cursor cur = ((MoviesFragment)mMoviesView).getActivity().getContentResolver().query(
+                favoriteMoviesUri,
+                null,
+                null,
+                null,
+                null);
+        PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
+                MoviesApi.favorite);
+        mMoviesView.showFavoriteMovies(cur);
+        mMoviesView.updateMenu();
     }
 
     @Override
