@@ -19,6 +19,7 @@ public interface MoviesContract {
         void showMovies(List<Movie> movies);
         void showMovieDetailUI(Movie movie);
         void showFavoriteMovies(Cursor cursor);
+        void resetFavoriteMovies();
         void clearMovies();
         void updateMenu();
     }

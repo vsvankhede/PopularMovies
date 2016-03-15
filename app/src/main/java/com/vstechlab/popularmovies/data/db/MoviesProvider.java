@@ -13,8 +13,14 @@ public class MoviesProvider extends ContentProvider {
     private MoviesDbHelper mOpenHelper;
 
     static final int FAVORITE = 100;
+    static final int FAVORITE_WITH_ID = 200;
 
     private static final SQLiteQueryBuilder sMoviesQueryBuilder;
+
+    // favorite.movie_id = ?
+    private static final String sFavoriteMovieWithId =
+            MoviesContract.FavoriteMovies.TABLE_NAME +
+                    "." + MoviesContract.FavoriteMovies.COLUMN_MOVIE_KEY + " = ? ";
 
     static {
         sMoviesQueryBuilder = new SQLiteQueryBuilder();
@@ -26,6 +32,7 @@ public class MoviesProvider extends ContentProvider {
         final String authority = MoviesContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, MoviesContract.PATH_FAVORITE, FAVORITE);
+        matcher.addURI(authority, MoviesContract.PATH_FAVORITE + "/*", FAVORITE_WITH_ID);
         return matcher;
     }
 
@@ -35,6 +42,18 @@ public class MoviesProvider extends ContentProvider {
                 projection,
                 null,
                 null,
+                null,
+                null,
+                null);
+    }
+
+    private Cursor getFavoriteMoviesById(Uri uri, String[] projection) {
+        long movieId = MoviesContract.FavoriteMovies.getMovieIdFromUri(uri);
+
+        return sMoviesQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sFavoriteMovieWithId,
+                new String[]{Long.toString(movieId)},
                 null,
                 null,
                 null);
@@ -54,6 +73,9 @@ public class MoviesProvider extends ContentProvider {
             //"favorite"
             case FAVORITE:
                 retCursor = getFavoriteMovies(projection);
+                break;
+            case FAVORITE_WITH_ID:
+                retCursor = getFavoriteMoviesById(uri, projection);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

@@ -29,7 +29,7 @@ import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.
 import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.COLUMN_VOTE_AVG;
 
 public class TestUtilities extends AndroidTestCase{
-    private static final int DUMMY_MOVIE_ROW_ID = 201;
+    public static final int DUMMY_MOVIE_ROW_ID = 201;
     private static final String DUMMY_POSTER_PATH = "http://image.tmdb.org/t/p/w185/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg";
     private static final String DUMMY_SUMMARY = "dummy summery of movie";
     private static final String DUMMY_TITLE = "Avenger";

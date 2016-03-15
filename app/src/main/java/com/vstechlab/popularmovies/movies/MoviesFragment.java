@@ -1,5 +1,7 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -25,8 +27,9 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MoviesFragment extends Fragment implements MoviesContract.View {
+public class MoviesFragment extends Fragment implements MoviesContract.View{
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
+    public static final int FAVORITE_MOVIES_LOADER = 0;
 
     private MoviesContract.UserActionListener mUserActionListener;
     private ProgressBar mProgressBar;
@@ -123,6 +126,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
     }
 
     @Override
+    public void resetFavoriteMovies() {
+        mFavoriteMoviesAdapter.swapCursor(null);
+    }
+
+    @Override
     public void clearMovies() {
         mMoviesAdapter.setMovieList(new ArrayList<Movie>(0));
     }
@@ -163,12 +171,17 @@ public class MoviesFragment extends Fragment implements MoviesContract.View {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            Movie movie = (Movie) adapterView.getItemAtPosition(position);
-            startActivity(MovieActivity.getStartIntent(getActivity(), movie));
+            if (adapterView.getAdapter() instanceof MoviesAdapter) {
+                Movie movie = (Movie) adapterView.getItemAtPosition(position);
+                startActivity(MovieActivity.getStartIntent(getActivity(), movie));
+            } else if (adapterView.getAdapter() instanceof FavoriteMoviesAdapter) {
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+            }
         }
     };
 
     private String getMoviePreference() {
         return PreferenceHelper.getMoviePreference(getActivity());
     }
+
 }

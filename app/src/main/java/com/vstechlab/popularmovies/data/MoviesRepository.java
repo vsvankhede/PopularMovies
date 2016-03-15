@@ -1,12 +1,12 @@
 package com.vstechlab.popularmovies.data;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.support.v4.content.CursorLoader;
 
 import retrofit.Call;
 
 public interface MoviesRepository {
     Call getMoviesSortByPopularity();
     Call getMoviesSortByRatting();
-    Cursor getFavoriteMovies(Context context);
+    CursorLoader getFavoriteMovies(Context context);
 }

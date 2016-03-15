@@ -1,9 +1,12 @@
 package com.vstechlab.popularmovies.movies;
 
 import android.content.Context;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
 
 import com.vstechlab.popularmovies.data.MoviesRepository;
 import com.vstechlab.popularmovies.data.entity.MovieList;
@@ -15,7 +18,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class MoviesPresenter implements MoviesContract.UserActionListener {
+public class MoviesPresenter implements MoviesContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor>  {
 
     private final MoviesRepository mMoviesRepository;
     private final MoviesContract.View mMoviesView;
@@ -81,13 +84,7 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
 
     @Override
     public void loadFavoriteMovies(Context context) {
-//        Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.CONTENT_URI;
-
-        Cursor cur = mMoviesRepository.getFavoriteMovies(context);
-        PreferenceHelper.setMoviePreference(((MoviesFragment)mMoviesView).getActivity(),
-                MoviesApi.favorite);
-        mMoviesView.showFavoriteMovies(cur);
-        mMoviesView.updateMenu();
+        ((MoviesFragment)mMoviesView).getLoaderManager().initLoader(MoviesFragment.FAVORITE_MOVIES_LOADER, null, this);
     }
 
     @Override
@@ -108,5 +105,24 @@ public class MoviesPresenter implements MoviesContract.UserActionListener {
     @Override
     public void onDestroy() {
 
+    }
+
+
+    @Override
+    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return mMoviesRepository.getFavoriteMovies(((MoviesFragment)mMoviesView).getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+        PreferenceHelper.setMoviePreference(((MoviesFragment) mMoviesView).getActivity(),
+                MoviesApi.favorite);
+        mMoviesView.showFavoriteMovies(data);
+        mMoviesView.updateMenu();
+    }
+
+    @Override
+    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+        mMoviesView.resetFavoriteMovies();
     }
 }

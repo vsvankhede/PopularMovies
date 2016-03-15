@@ -101,6 +101,30 @@ public class TestProvider extends AndroidTestCase {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void testFavoriteMovieWithIdQuery() {
+        deleteAllRecordFromProvider();
+        ContentValues values = TestUtilities.createFavoriteMovieValues(mContext);
+        long favoriteMovieRowId = TestUtilities.insertFavoriteMovieValues(mContext);
+
+        assertTrue("Error: Failed to insert favorite movie", favoriteMovieRowId != -1);
+
+        Uri uri = FavoriteMovies.buildFavoriteMovieUri(TestUtilities.DUMMY_MOVIE_ROW_ID);
+
+        Cursor favoriteMovieCursor = mContext.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null,
+                null);
+        TestUtilities.validateCursor("testFavoriteMovieWithIdQuery, favorite movie with id query", favoriteMovieCursor, values);
+        if ( Build.VERSION.SDK_INT >= 19 ) {
+            assertEquals("Error: Location Query did not properly set NotificationUri",
+                    favoriteMovieCursor.getNotificationUri(), uri);
+        }
+    }
+
     public void testInsertFavoriteMovieProvider() {
         ContentValues testValues = TestUtilities.createFavoriteMovieValues(mContext);
 

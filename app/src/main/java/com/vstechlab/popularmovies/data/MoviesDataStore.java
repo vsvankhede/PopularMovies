@@ -2,8 +2,8 @@ package com.vstechlab.popularmovies.data;
 
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -52,10 +52,10 @@ public class MoviesDataStore implements MoviesRepository {
     }
 
     @Override
-    public Cursor getFavoriteMovies(Context context) {
+    public CursorLoader getFavoriteMovies(Context context) {
         Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract
                 .FavoriteMovies.CONTENT_URI;
-        return context.getContentResolver().query(
+        return new CursorLoader(context,
                 favoriteMoviesUri,
                 null,
                 null,
