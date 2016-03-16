@@ -62,4 +62,15 @@ public class MoviesDataStore implements MoviesRepository {
                 null,
                 null);
     }
+
+    @Override
+    public CursorLoader getFavoriteMovieDetail(Context context, Uri uri) {
+
+        return new CursorLoader(context,
+                uri,
+                null,
+                null,
+                null,
+                null);
+    }
 }

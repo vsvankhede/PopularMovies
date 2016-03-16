@@ -24,10 +24,11 @@ public class MovieActivity extends AppCompatActivity {
         return intent;
     }
 
-    public static Intent getFavoriteMovieStartIntent(Activity activity, @NonNull Cursor cursor,
-                                                     @NonNull int COL_MOVIE_ID) {
+    public static Intent getFavoriteMovieStartIntent(Activity activity, @NonNull Cursor cursor) {
+        int movieColumnIdx = cursor.getColumnIndex(MoviesContract.FavoriteMovies.COLUMN_MOVIE_KEY);
+
         return new Intent(activity, MovieActivity.class)
-                .setData(MoviesContract.FavoriteMovies.buildFavoriteMovieUri(cursor.getInt(COL_MOVIE_ID)));
+                .setData(MoviesContract.FavoriteMovies.buildFavoriteMovieUri(cursor.getInt(movieColumnIdx)));
     }
 
     @Override

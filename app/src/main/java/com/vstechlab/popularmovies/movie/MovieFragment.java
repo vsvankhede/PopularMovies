@@ -1,10 +1,8 @@
 package com.vstechlab.popularmovies.movie;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +14,14 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.entity.Movie;
-import com.vstechlab.popularmovies.movies.MoviesContract;
-import com.vstechlab.popularmovies.utils.Utils;
+import com.vstechlab.popularmovies.movies.Injection;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MovieFragment extends Fragment implements MovieContract.View {
     private static final String LOG_TAG = MovieFragment.class.getSimpleName();
-
+    public static final int FAVORITE_MOVIES_DETAIL_LOADER = 1;
     private Movie mMovie;
 
     private MovieContract.UserActionListener mUserActionListener;
@@ -37,6 +34,8 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     private TextView tvOverview;
 
     private ImageView ivPoster;
+    private Uri mUri;
+    private boolean mFavoriteMovie;
 
     public MovieFragment() {
     }
@@ -44,7 +43,15 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMovie = getActivity().getIntent().getParcelableExtra(MovieActivity.EXTRA_MOVIE);
+        if (getActivity().getIntent().getParcelableExtra(MovieActivity.EXTRA_MOVIE) != null) {
+            mMovie = getActivity().getIntent().getParcelableExtra(MovieActivity.EXTRA_MOVIE);
+            mFavoriteMovie = false;
+        } else if (getActivity().getIntent().getData() != null) {
+            mUri = getActivity().getIntent().getData();
+            mFavoriteMovie = true;
+        }
+
+
     }
 
     @Override
@@ -57,8 +64,9 @@ public class MovieFragment extends Fragment implements MovieContract.View {
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap bitmap = ((BitmapDrawable) ivPoster.getDrawable()).getBitmap();
-                mUserActionListener.saveFavoriteMovie(mMovie);
+                if (!mFavoriteMovie) {
+                    mUserActionListener.saveFavoriteMovie(mMovie);
+                }
             }
         });
 
@@ -75,14 +83,18 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     @Override
     public void onResume() {
         super.onResume();
-        mUserActionListener.loadMovieDetails(mMovie);
+        if (mFavoriteMovie) {
+            mUserActionListener.loadFavoriteMovieDetails(mUri);
+        } else {
+            mUserActionListener.loadMovieDetails(mMovie);
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        mUserActionListener = new MoviePresenter(this);
+        mUserActionListener = new MoviePresenter(Injection.provideMoviesRepository(), this);
     }
 
     @Override
@@ -136,6 +148,11 @@ public class MovieFragment extends Fragment implements MovieContract.View {
 
     @Override
     public void hideReleaseDate() {
+
+    }
+
+    @Override
+    public void setMovieTrailer(String[] movieTrailers) {
 
     }
 

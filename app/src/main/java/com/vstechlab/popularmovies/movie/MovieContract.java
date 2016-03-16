@@ -1,6 +1,7 @@
 package com.vstechlab.popularmovies.movie;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.vstechlab.popularmovies.LoadDataView;
 import com.vstechlab.popularmovies.Presenter;
@@ -25,6 +26,8 @@ public interface MovieContract {
         void showReleaseDate(String date);
         void hideReleaseDate();
 
+        void setMovieTrailer(String[] movieTrailers);
+
         void showToast(String message);
     }
 
@@ -32,5 +35,6 @@ public interface MovieContract {
 
         void loadMovieDetails(Movie movie);
         void saveFavoriteMovie(Movie movie);
+        void loadFavoriteMovieDetails(Uri uri);
     }
 }

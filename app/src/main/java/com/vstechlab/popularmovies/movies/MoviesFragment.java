@@ -176,6 +176,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
                 startActivity(MovieActivity.getStartIntent(getActivity(), movie));
             } else if (adapterView.getAdapter() instanceof FavoriteMoviesAdapter) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                startActivity(MovieActivity.getFavoriteMovieStartIntent(getActivity(), cursor));
             }
         }
     };
