@@ -1,9 +1,12 @@
 package com.vstechlab.popularmovies.data.net;
 
 import com.vstechlab.popularmovies.data.entity.MovieList;
+import com.vstechlab.popularmovies.data.entity.ReviewList;
+import com.vstechlab.popularmovies.data.entity.TrailerList;
 
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface MoviesApi {
@@ -21,4 +24,10 @@ public interface MoviesApi {
 
     @GET("discover/movie")
     Call<MovieList> getMoviesSortByRatting(@Query("sort_by") String sortByHighRated);
+
+    @GET("movie/{id}/videos")
+    Call<TrailerList> getMovieTrailers(@Path("id") long id);
+
+    @GET("movie/{id}/reviews")
+    Call<ReviewList> getMovieReviews(@Path("id") long id);
 }

@@ -9,6 +9,8 @@ import retrofit.Call;
 public interface MoviesRepository {
     Call getMoviesSortByPopularity();
     Call getMoviesSortByRatting();
+    Call getMovieTrailers(long movieId);
+    Call getMovieReviews(long movieId);
     CursorLoader getFavoriteMovies(Context context);
     CursorLoader getFavoriteMovieDetail(Context context, Uri uri);
 }

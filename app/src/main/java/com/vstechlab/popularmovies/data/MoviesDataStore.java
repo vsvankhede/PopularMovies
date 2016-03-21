@@ -52,6 +52,16 @@ public class MoviesDataStore implements MoviesRepository {
     }
 
     @Override
+    public Call getMovieTrailers(long movieId) {
+        return mMoviesApi.getMovieTrailers(movieId);
+    }
+
+    @Override
+    public Call getMovieReviews(long movieId) {
+        return mMoviesApi.getMovieReviews(movieId);
+    }
+
+    @Override
     public CursorLoader getFavoriteMovies(Context context) {
         Uri favoriteMoviesUri = com.vstechlab.popularmovies.data.db.MoviesContract
                 .FavoriteMovies.CONTENT_URI;
