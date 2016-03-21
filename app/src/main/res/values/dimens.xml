@@ -4,4 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="twogrid">16dp</dimen>
     <dimen name="onegrid">8dp</dimen>
+    <dimen name="divider_margin">4dp</dimen>
 </resources>

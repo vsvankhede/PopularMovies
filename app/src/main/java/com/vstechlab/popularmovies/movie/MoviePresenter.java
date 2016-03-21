@@ -14,10 +14,17 @@ import com.vstechlab.popularmovies.data.MoviesRepository;
 import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.data.entity.Movie;
+import com.vstechlab.popularmovies.data.entity.ReviewList;
+import com.vstechlab.popularmovies.data.entity.TrailerList;
 import com.vstechlab.popularmovies.movies.MoviesFragment;
 import com.vstechlab.popularmovies.utils.Utils;
 
 import java.text.DecimalFormat;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class MoviePresenter implements MovieContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MoviePresenter.class.getSimpleName();
@@ -38,6 +45,8 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
         mMoviesView.showReleaseDate(movie.getReleaseDate());
         mMoviesView.showVoteAverage(movie.getVoteAverage());
         mMoviesView.showOverview(movie.getOverview());
+        loadReviews(movie.getId());
+        loadTrailers(movie.getId());
     }
 
     @Override
@@ -72,6 +81,38 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
                 this);
         Log.d(LOG_TAG, "loadFavoriteMovieDetails.uri: " + uri.toString());
     }
+
+    private void loadTrailers(long movieId) {
+        Call<TrailerList> call = mMoviesRepository.getMovieTrailers(movieId);
+        call.enqueue(new Callback<TrailerList>() {
+            @Override
+            public void onResponse(Response<TrailerList> response, Retrofit retrofit) {
+                TrailerList trailerList = response.body();
+                mMoviesView.showMovieTrailer(trailerList.getResults());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    };
+
+    private void loadReviews(long movieId) {
+        Call<ReviewList> call =  mMoviesRepository.getMovieReviews(movieId);
+        call.enqueue(new Callback<ReviewList>() {
+            @Override
+            public void onResponse(Response<ReviewList> response, Retrofit retrofit) {
+                ReviewList reviewList = response.body();
+                mMoviesView.showMovieReview(reviewList.getResults());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    };
 
     @Override
     public void onResume() {

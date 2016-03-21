@@ -14,7 +14,11 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.entity.Movie;
+import com.vstechlab.popularmovies.data.entity.Review;
+import com.vstechlab.popularmovies.data.entity.Trailer;
 import com.vstechlab.popularmovies.movies.Injection;
+
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -152,7 +156,12 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     }
 
     @Override
-    public void setMovieTrailer(String[] movieTrailers) {
+    public void showMovieTrailer(List<Trailer> trailers) {
+
+    }
+
+    @Override
+    public void showMovieReview(List<Review> reviews) {
 
     }
 

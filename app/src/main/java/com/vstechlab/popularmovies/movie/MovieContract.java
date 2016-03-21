@@ -6,6 +6,10 @@ import android.net.Uri;
 import com.vstechlab.popularmovies.LoadDataView;
 import com.vstechlab.popularmovies.Presenter;
 import com.vstechlab.popularmovies.data.entity.Movie;
+import com.vstechlab.popularmovies.data.entity.Review;
+import com.vstechlab.popularmovies.data.entity.Trailer;
+
+import java.util.List;
 
 public interface MovieContract {
 
@@ -26,7 +30,9 @@ public interface MovieContract {
         void showReleaseDate(String date);
         void hideReleaseDate();
 
-        void setMovieTrailer(String[] movieTrailers);
+        void showMovieTrailer(List<Trailer> trailers);
+
+        void showMovieReview(List<Review> reviews);
 
         void showToast(String message);
     }
