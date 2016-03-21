@@ -24,20 +24,10 @@ public interface MoviesContract {
         void updateMenu();
     }
 
-    interface FavoriteMoviesView extends LoadDataView {
-        void showMovies(FavoriteMoviesAdapter favoriteMoviesAdapter);
-        void updateMenu();
-    }
-
     interface UserActionListener extends Presenter {
         void loadMoviesSortByPopularity();
         void loadMoviesSortByRatting();
         void loadFavoriteMovies(Context context);
         void openMovieDetails();
-    }
-
-    interface FavoriteMoviesUserActionListener extends Presenter {
-        void loadFavoriteMovies();
-        void openMoviesDetails();
     }
 }
