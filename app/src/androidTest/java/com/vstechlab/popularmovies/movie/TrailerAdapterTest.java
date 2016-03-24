@@ -39,7 +39,4 @@ public class TrailerAdapterTest extends AndroidTestCase{
 
     }
 
-    public void testTrailerItemTitle() {
-        assertEquals("Error: incorrect Trailer title", mTestTrailerList.get(0).getName(), ((Trailer) mTrailerAdapter.getItem(0)).getName());
-    }
 }

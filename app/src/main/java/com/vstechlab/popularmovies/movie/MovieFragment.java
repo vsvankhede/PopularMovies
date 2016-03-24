@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,10 @@ import java.util.List;
 public class MovieFragment extends Fragment implements MovieContract.View {
     private static final String LOG_TAG = MovieFragment.class.getSimpleName();
     public static final int FAVORITE_MOVIES_DETAIL_LOADER = 1;
-    private Movie mMovie;
 
     private MovieContract.UserActionListener mUserActionListener;
 
+    private boolean mFavoriteMovie;
     private Button btnFavorite;
 
     private TextView tvOriginalTitle;
@@ -38,8 +39,12 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     private TextView tvOverview;
 
     private ImageView ivPoster;
+    private ListView lvTrailer;
     private Uri mUri;
-    private boolean mFavoriteMovie;
+
+    private Movie mMovie;
+    private TrailerAdapter mTrailerAdapter;
+
 
     public MovieFragment() {
     }
@@ -79,6 +84,7 @@ public class MovieFragment extends Fragment implements MovieContract.View {
         tvAvgVote = (TextView) view.findViewById(R.id.fragment_movie_tv_vote);
         ivPoster = (ImageView) view.findViewById(R.id.fragment_movie_iv_poster);
         tvOverview = (TextView) view.findViewById(R.id.fragment_movie_tv_overview);
+        lvTrailer = (ListView) view.findViewById(R.id.fragment_movie_lv_trailers);
 
         return view;
     }
@@ -157,7 +163,10 @@ public class MovieFragment extends Fragment implements MovieContract.View {
 
     @Override
     public void showMovieTrailer(List<Trailer> trailers) {
-
+        if (trailers != null) {
+            mTrailerAdapter = new TrailerAdapter(this.getActivity(), trailers);
+            lvTrailer.setAdapter(mTrailerAdapter);
+        }
     }
 
     @Override
