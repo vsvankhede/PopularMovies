@@ -14,10 +14,13 @@ import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
+import com.vstechlab.popularmovies.data.entity.Trailer;
 import com.vstechlab.popularmovies.utils.PollingCheck;
 import com.vstechlab.popularmovies.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,12 +31,21 @@ import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.
 import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.COLUMN_TITLE;
 import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.COLUMN_VOTE_AVG;
 
-public class TestUtilities extends AndroidTestCase{
+public class TestUtilities extends AndroidTestCase {
     public static final int DUMMY_MOVIE_ROW_ID = 201;
     private static final String DUMMY_POSTER_PATH = "http://image.tmdb.org/t/p/w185/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg";
     private static final String DUMMY_SUMMARY = "dummy summery of movie";
     private static final String DUMMY_TITLE = "Avenger";
     private static final double DUMMY_RATING_AVG = 7.5;
+    private static final String DUMMY_TRAILER_ID = "56c4ccbfc3a3680d52000610";
+    private static final String DUMMY_ISO_639_1 = "en";
+    private static final String DUMMY_ISO_3166_1 = "US";
+    private static final String DUMMY_TRAILER_KEY = "nIGtF3J5kn8";
+    private static final String DUMMY_TRAILER_NAME = "Trailer";
+    private static final String DUMMY_TRAILER_SITE = "YouTube";
+    private static final int DUMMY_TRAILER_SIZE = 1080;
+    private static final String DUMMY_TRAILER_TYPE = "Trailer";
+
 
     static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
@@ -43,7 +55,7 @@ public class TestUtilities extends AndroidTestCase{
             assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
             String expectedValue = entry.getValue().toString();
             assertEquals(columnName + ": Value '" + valueCursor.getString(idx) + "' did not match the expected value '"
-                        + expectedValue +"'", expectedValue, valueCursor.getString(idx));
+                    + expectedValue + "'", expectedValue, valueCursor.getString(idx));
         }
     }
 
@@ -116,7 +128,7 @@ public class TestUtilities extends AndroidTestCase{
         }
 
         public void waitForNotificationOrFail() {
-            new PollingCheck(5000){
+            new PollingCheck(5000) {
 
                 @Override
                 protected boolean check() {
@@ -129,5 +141,22 @@ public class TestUtilities extends AndroidTestCase{
 
     static TestContentObserver getTestContentObserver() {
         return TestContentObserver.getTestContentObserver();
+    }
+
+    public static List<Trailer> createTrailerList() {
+        List<Trailer> trailerList = new ArrayList<>();
+        trailerList.add(createTrailer());
+
+        return trailerList;
+    }
+
+    private static Trailer createTrailer() {
+        Trailer trailer = new Trailer();
+        trailer.setId(DUMMY_TRAILER_ID);
+        trailer.setIso6391(DUMMY_ISO_639_1);
+        trailer.setKey(DUMMY_TRAILER_KEY);
+        trailer.setName(DUMMY_TRAILER_NAME);
+        trailer.setSite(DUMMY_TRAILER_SITE);
+        return trailer;
     }
 }
