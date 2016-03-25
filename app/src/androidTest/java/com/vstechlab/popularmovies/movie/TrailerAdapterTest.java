@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.vstechlab.popularmovies.R;
-import com.vstechlab.popularmovies.data.db.TestUtilities;
+import com.vstechlab.popularmovies.utils.TestUtilities;
 import com.vstechlab.popularmovies.data.entity.Trailer;
 
 import java.util.List;
@@ -23,7 +23,8 @@ public class TrailerAdapterTest extends AndroidTestCase{
     }
 
     public void testGetViewTypeCount() {
-        assertEquals("Error: TrailerAdapter view items are incorrect", EXPECTED_VIEW_TYPE_COUNT, mTrailerAdapter.getViewTypeCount());
+        assertEquals("Error: TrailerAdapter view items are incorrect", EXPECTED_VIEW_TYPE_COUNT,
+                mTrailerAdapter.getViewTypeCount());
     }
 
     public void testGetView() {

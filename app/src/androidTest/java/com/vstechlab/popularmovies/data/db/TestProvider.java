@@ -13,8 +13,9 @@ import android.os.Build;
 import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
+import com.vstechlab.popularmovies.utils.TestUtilities;
 
-import static com.vstechlab.popularmovies.data.db.TestUtilities.TestContentObserver.getTestContentObserver;
+import static com.vstechlab.popularmovies.utils.TestUtilities.TestContentObserver.getTestContentObserver;
 
 public class TestProvider extends AndroidTestCase {
 

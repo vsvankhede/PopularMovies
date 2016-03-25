@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.db.MoviesDbHelper;
-import com.vstechlab.popularmovies.data.db.TestUtilities;
+import com.vstechlab.popularmovies.utils.TestUtilities;
 import com.vstechlab.popularmovies.movies.FavoriteMoviesAdapter;
 
 public class FavoriteMoviesAdapterTest extends AndroidTestCase {

@@ -42,5 +42,7 @@ public interface MovieContract {
         void loadMovieDetails(Movie movie);
         void saveFavoriteMovie(Movie movie);
         void loadFavoriteMovieDetails(Uri uri);
+        void launchYoutubeVideo(String videoId);
+        void readReview(long movieId);
     }
 }

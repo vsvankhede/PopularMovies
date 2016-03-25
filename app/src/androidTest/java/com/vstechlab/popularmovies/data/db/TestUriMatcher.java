@@ -4,6 +4,8 @@ import android.content.UriMatcher;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
+import com.vstechlab.popularmovies.utils.TestUtilities;
+
 public class TestUriMatcher extends AndroidTestCase {
 
     // content://com.vstechlab.popularmovies.app/favorite

@@ -20,20 +20,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-
     // Retrofit
     compile "com.squareup.retrofit:retrofit:$rootProject.retrofitVersion"
     compile "com.squareup.retrofit:converter-gson:$rootProject.retrofitVersion"
     compile "com.squareup.okhttp:okhttp:$rootProject.okhttpVersion"
     compile "com.squareup.retrofit:adapter-rxjava:$rootProject.retrofitVersion"
     compile 'com.squareup.okhttp:logging-interceptor:2.6.0'
-
+    compile "com.google.apis:google-api-services-youtube:$rootProject.googleApiServiceYoutubeVersion"
     // Picasso
     compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
-
     // Debug compile
     debugCompile "com.facebook.stetho:stetho:$rootProject.stethoVersion"
     debugCompile "com.facebook.stetho:stetho-okhttp:$rootProject.stethoOkhttpVersion"
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

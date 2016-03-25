@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
+import com.vstechlab.popularmovies.utils.TestUtilities;
 
 import java.util.HashSet;
 

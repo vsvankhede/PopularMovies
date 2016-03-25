@@ -74,6 +74,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_favorite" />
+                    <Button
+                        android:id="@+id/fragment_movie_btn_read_review"
+                        android:text="@string/btn_read_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
             <!-- Movie title, description-->
@@ -122,28 +127,7 @@
                     android:divider="@android:color/black"
                     android:dividerHeight="1dp"/>
             </LinearLayout>
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@android:color/black" />
-            <!-- Reviews -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Reviews"
-                    android:textSize="20sp" />
-                <ListView
-                    android:id="@+id/fragment_movie_lv_reviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:divider="@android:color/black"
-                    android:dividerHeight="1dp"/>
-            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

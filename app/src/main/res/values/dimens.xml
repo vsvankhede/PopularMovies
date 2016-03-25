@@ -5,4 +5,6 @@
     <dimen name="twogrid">16dp</dimen>
     <dimen name="onegrid">8dp</dimen>
     <dimen name="divider_margin">4dp</dimen>
+    <dimen name="primary_text">16sp</dimen>
+    <dimen name="secondary_text">14sp</dimen>
 </resources>

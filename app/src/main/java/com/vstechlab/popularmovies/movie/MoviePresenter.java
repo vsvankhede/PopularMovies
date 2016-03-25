@@ -2,6 +2,7 @@ package com.vstechlab.popularmovies.movie;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,16 +11,12 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.vstechlab.popularmovies.data.MoviesRepository;
-import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.data.entity.ReviewList;
 import com.vstechlab.popularmovies.data.entity.TrailerList;
-import com.vstechlab.popularmovies.movies.MoviesFragment;
-import com.vstechlab.popularmovies.utils.Utils;
-
-import java.text.DecimalFormat;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -28,6 +25,8 @@ import retrofit.Retrofit;
 
 public class MoviePresenter implements MovieContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MoviePresenter.class.getSimpleName();
+    // Todo remove api key before commit
+    private static final String YOUTUBE_DEVELOPER_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
     private final MoviesRepository mMoviesRepository;
     private final MovieContract.View mMoviesView;
@@ -45,7 +44,6 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
         mMoviesView.showReleaseDate(movie.getReleaseDate());
         mMoviesView.showVoteAverage(movie.getVoteAverage());
         mMoviesView.showOverview(movie.getOverview());
-        loadReviews(movie.getId());
         loadTrailers(movie.getId());
     }
 
@@ -82,13 +80,27 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
         Log.d(LOG_TAG, "loadFavoriteMovieDetails.uri: " + uri.toString());
     }
 
+    @Override
+    public void launchYoutubeVideo(String videoId) {
+        Intent intent = YouTubeStandalonePlayer.createVideoIntent(((MovieFragment)mMoviesView).getActivity(),
+                YOUTUBE_DEVELOPER_KEY, videoId);
+        ((MovieFragment)mMoviesView).startActivity(intent);
+    }
+
+    @Override
+    public void readReview(long movieId) {
+        loadReviews(movieId);
+    }
+
     private void loadTrailers(long movieId) {
         Call<TrailerList> call = mMoviesRepository.getMovieTrailers(movieId);
         call.enqueue(new Callback<TrailerList>() {
             @Override
             public void onResponse(Response<TrailerList> response, Retrofit retrofit) {
                 TrailerList trailerList = response.body();
-                mMoviesView.showMovieTrailer(trailerList.getResults());
+                if (trailerList != null) {
+                    mMoviesView.showMovieTrailer(trailerList.getResults());
+                }
             }
 
             @Override
@@ -104,7 +116,9 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
             @Override
             public void onResponse(Response<ReviewList> response, Retrofit retrofit) {
                 ReviewList reviewList = response.body();
-                mMoviesView.showMovieReview(reviewList.getResults());
+                if (reviewList != null) {
+                    mMoviesView.showMovieReview(reviewList.getResults());
+                }
             }
 
             @Override

@@ -1,22 +1,19 @@
-package com.vstechlab.popularmovies.data.db;
+package com.vstechlab.popularmovies.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.test.AndroidTestCase;
 
-import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
+import com.vstechlab.popularmovies.data.db.MoviesDbHelper;
+import com.vstechlab.popularmovies.data.entity.Review;
 import com.vstechlab.popularmovies.data.entity.Trailer;
-import com.vstechlab.popularmovies.utils.PollingCheck;
-import com.vstechlab.popularmovies.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +30,7 @@ import static com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies.
 
 public class TestUtilities extends AndroidTestCase {
     public static final int DUMMY_MOVIE_ROW_ID = 201;
+    public static final String DUMMY_REVIEW_CONTENT = "The movie is not bad directed and the cast does a decent job. Actually, the script is a good adaptation of the book. The problem is that the story of the book is already quite bad";
     private static final String DUMMY_POSTER_PATH = "http://image.tmdb.org/t/p/w185/5aGhaIHYuQbqlHWvWYqMCnj40y2.jpg";
     private static final String DUMMY_SUMMARY = "dummy summery of movie";
     private static final String DUMMY_TITLE = "Avenger";
@@ -45,9 +43,12 @@ public class TestUtilities extends AndroidTestCase {
     private static final String DUMMY_TRAILER_SITE = "YouTube";
     private static final int DUMMY_TRAILER_SIZE = 1080;
     private static final String DUMMY_TRAILER_TYPE = "Trailer";
+    public static final String DUMMY_REVIEW_ID = "56523f779251417a760001d1";
+    public static final String DUMMY_REVIEW_URL = "https://www.themoviedb.org/review/56523f779251417a760001d1";
+    public static final String DUMMY_REVIEW_AUTHER = "Frank Ochieng";
 
 
-    static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
+    public static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
         for (Map.Entry<String, Object> entry : valueSet) {
             String columnName = entry.getKey();
@@ -65,7 +66,7 @@ public class TestUtilities extends AndroidTestCase {
         valueCursor.close();
     }
 
-    static ContentValues createMovieValues(int movieRowId, Context context) {
+    public static ContentValues createMovieValues(int movieRowId, Context context) {
         ContentValues movieValues = new ContentValues();
         movieValues.put(COLUMN_MOVIE_KEY, movieRowId);
         movieValues.put(COLUMN_POSTER, DUMMY_POSTER_PATH);
@@ -139,7 +140,7 @@ public class TestUtilities extends AndroidTestCase {
         }
     }
 
-    static TestContentObserver getTestContentObserver() {
+    public static TestContentObserver getTestContentObserver() {
         return TestContentObserver.getTestContentObserver();
     }
 
@@ -150,6 +151,12 @@ public class TestUtilities extends AndroidTestCase {
         return trailerList;
     }
 
+    public static List<Review> createReviewList() {
+        List<Review> reviewList = new ArrayList<>();
+        reviewList.add(createReview());
+        return reviewList;
+    }
+
     private static Trailer createTrailer() {
         Trailer trailer = new Trailer();
         trailer.setId(DUMMY_TRAILER_ID);
@@ -158,5 +165,14 @@ public class TestUtilities extends AndroidTestCase {
         trailer.setName(DUMMY_TRAILER_NAME);
         trailer.setSite(DUMMY_TRAILER_SITE);
         return trailer;
+    }
+
+    private static Review createReview() {
+        Review review = new Review();
+        review.setId(DUMMY_REVIEW_ID);
+        review.setUrl(DUMMY_REVIEW_URL);
+        review.setContent(DUMMY_REVIEW_CONTENT);
+        review.setAuthor(DUMMY_REVIEW_AUTHER);
+        return review;
     }
 }
