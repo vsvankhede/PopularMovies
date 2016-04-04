@@ -1,13 +1,18 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.vstechlab.popularmovies.R;
+import com.vstechlab.popularmovies.data.db.*;
+import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.entity.Movie;
+import com.vstechlab.popularmovies.movie.MovieActivity;
 import com.vstechlab.popularmovies.movie.MovieFragment;
 
 public class MoviesActivity extends AppCompatActivity implements MoviesFragment.Callback{
@@ -54,18 +59,40 @@ public class MoviesActivity extends AppCompatActivity implements MoviesFragment.
     @Override
     public void onMovieSelected(Movie movie) {
         if (mTwoPane){
+            // Replace movie fragment
+            Bundle args = new Bundle();
+            args.putParcelable(MovieFragment.EXTRA_MOVIE, movie);
+            MovieFragment fragment = new MovieFragment();
+            fragment.setArguments(args);
 
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
         } else {
-
+            // Launch movie fragment
+            startActivity(MovieActivity.getStartIntent(this, movie));
         }
     }
 
     @Override
     public void onFavoriteMovieSelected(Cursor cursor) {
         if (mTwoPane) {
+            // Replace movie fragment
+            int movieColumnIdx = cursor.getColumnIndex(MoviesContract.FavoriteMovies.COLUMN_MOVIE_KEY);
+            Bundle args =  new Bundle();
+            Uri movieUri = com.vstechlab.popularmovies.data.db.MoviesContract
+                    .FavoriteMovies
+                    .buildFavoriteMovieUri(cursor.getInt(movieColumnIdx));
+            args.putParcelable(MovieFragment.DETAIL_URI, args);
+            MovieFragment fragment = new MovieFragment();
+            fragment.setArguments(args);
 
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
         } else {
-
+            // Launch movie fragment
+            startActivity(MovieActivity.getFavoriteMovieStartIntent(this, cursor));
         }
     }
 }

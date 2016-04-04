@@ -34,7 +34,7 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     public static final int FAVORITE_MOVIES_DETAIL_LOADER = 1;
     public static final String EXTRA_REVIEW_LIST = "EXTRA_REVIEW_LIST";
     public static final String EXTRA_MOVIE = "EXTRA_MOVIE";
-
+    public static final String DETAIL_URI = "URI";
     private MovieContract.UserActionListener mUserActionListener;
 
     private boolean mFavoriteMovie;
