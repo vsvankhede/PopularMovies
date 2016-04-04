@@ -1,22 +1,38 @@
 package com.vstechlab.popularmovies.movies;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.vstechlab.popularmovies.R;
-import com.vstechlab.popularmovies.data.net.MoviesApi;
-import com.vstechlab.popularmovies.utils.PreferenceHelper;
+import com.vstechlab.popularmovies.data.entity.Movie;
+import com.vstechlab.popularmovies.movie.MovieFragment;
 
-public class MoviesActivity extends AppCompatActivity {
+public class MoviesActivity extends AppCompatActivity implements MoviesFragment.Callback{
     private static final String LOG_TAG = MoviesActivity.class.getSimpleName();
+    private static final String DETAILFRAGMENT_TAG = "DETAG";
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies);
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new MovieFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+            }
+
+        } else {
+            mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
+        }
     }
 
 
@@ -35,5 +51,21 @@ public class MoviesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onMovieSelected(Movie movie) {
+        if (mTwoPane){
 
+        } else {
+
+        }
+    }
+
+    @Override
+    public void onFavoriteMovieSelected(Cursor cursor) {
+        if (mTwoPane) {
+
+        } else {
+
+        }
+    }
 }

@@ -25,11 +25,11 @@ public class MoviesDataStore implements MoviesRepository {
         OkHttpClient okClient = new OkHttpClient();
 
         SignedInterceptor signingInterceptor = new SignedInterceptor(API_KEY);
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+//        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         okClient.interceptors().add(signingInterceptor);
-        okClient.interceptors().add(loggingInterceptor);
+//        okClient.interceptors().add(loggingInterceptor);
         okClient.networkInterceptors().add(new StethoInterceptor());
         Retrofit movieApiAdapter = new Retrofit.Builder()
                 .baseUrl(MoviesApi.BASE_URL)

@@ -28,6 +28,12 @@ import java.util.List;
  * A placeholder fragment containing a simple view.
  */
 public class MoviesFragment extends Fragment implements MoviesContract.View{
+
+    public interface Callback {
+        void onMovieSelected(Movie movie);
+        void onFavoriteMovieSelected(Cursor cursor);
+    }
+
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
     public static final int FAVORITE_MOVIES_LOADER = 0;
 
@@ -173,10 +179,12 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
             if (adapterView.getAdapter() instanceof MoviesAdapter) {
                 Movie movie = (Movie) adapterView.getItemAtPosition(position);
-                startActivity(MovieActivity.getStartIntent(getActivity(), movie));
+                ((Callback) getActivity()).onMovieSelected(movie);
+                //startActivity(MovieActivity.getStartIntent(getActivity(), movie));
             } else if (adapterView.getAdapter() instanceof FavoriteMoviesAdapter) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                startActivity(MovieActivity.getFavoriteMovieStartIntent(getActivity(), cursor));
+                ((Callback) getActivity()).onFavoriteMovieSelected(cursor);
+                //startActivity(MovieActivity.getFavoriteMovieStartIntent(getActivity(), cursor));
             }
         }
     };

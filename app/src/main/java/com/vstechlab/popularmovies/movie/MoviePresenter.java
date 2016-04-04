@@ -26,7 +26,7 @@ import retrofit.Retrofit;
 public class MoviePresenter implements MovieContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MoviePresenter.class.getSimpleName();
     // Todo remove api key before commit
-    private static final String YOUTUBE_DEVELOPER_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+    private static final String YOUTUBE_DEVELOPER_KEY = "AIzaSyC8XlfZeMzlB9nrrZ5tZ9JNbb7BRSI7p_s";
 
     private final MoviesRepository mMoviesRepository;
     private final MovieContract.View mMoviesView;
