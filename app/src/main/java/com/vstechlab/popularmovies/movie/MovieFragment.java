@@ -56,30 +56,34 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     private TrailerAdapter mTrailerAdapter;
 
     public MovieFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
+        //Todo move onCreate view
         if (savedInstanceState != null) {
             mMovie = savedInstanceState.getParcelable(EXTRA_MOVIE);
             assert mMovie != null;
-        }
-
-        if (getActivity().getIntent().getParcelableExtra(MovieActivity.EXTRA_MOVIE) != null) {
-            mMovie = getActivity().getIntent().getParcelableExtra(MovieActivity.EXTRA_MOVIE);
-            mFavoriteMovie = false;
-        } else if (getActivity().getIntent().getData() != null) {
-            mUri = getActivity().getIntent().getData();
-            mFavoriteMovie = true;
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            if (arguments.getParcelable(EXTRA_MOVIE) != null) {
+                mMovie = arguments.getParcelable(EXTRA_MOVIE);
+                mFavoriteMovie = false;
+            } else{
+                mUri = arguments.getParcelable(DETAIL_URI);
+                mFavoriteMovie = true;
+            }
+        }
+
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
         btnFavorite = (Button) view.findViewById(R.id.fragment_movie_btn_favorite);

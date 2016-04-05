@@ -83,7 +83,7 @@ public class MoviesActivity extends AppCompatActivity implements MoviesFragment.
             Uri movieUri = com.vstechlab.popularmovies.data.db.MoviesContract
                     .FavoriteMovies
                     .buildFavoriteMovieUri(cursor.getInt(movieColumnIdx));
-            args.putParcelable(MovieFragment.DETAIL_URI, args);
+            args.putParcelable(MovieFragment.DETAIL_URI, movieUri);
             MovieFragment fragment = new MovieFragment();
             fragment.setArguments(args);
 

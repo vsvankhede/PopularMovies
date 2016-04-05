@@ -36,6 +36,22 @@ public class MovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
 
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            if (getIntent().getParcelableExtra(MovieFragment.DETAIL_URI) != null) {
+                arguments.putParcelable(MovieFragment.DETAIL_URI, getIntent().getData());
+            } else {
+                arguments.putParcelable(MovieFragment.EXTRA_MOVIE, getIntent().getData());
+            }
+
+            MovieFragment fragment = new MovieFragment();
+            fragment.setArguments(arguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, fragment)
+                    .commit();
+        }
+
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
