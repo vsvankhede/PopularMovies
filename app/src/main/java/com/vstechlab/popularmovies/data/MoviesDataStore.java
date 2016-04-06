@@ -18,7 +18,7 @@ import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 
 public class MoviesDataStore implements MoviesRepository {
-    private final String API_KEY = "42940bbff0d5d9073a2800563a42925d";
+    private final String API_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
     private final MoviesApi mMoviesApi;
 
     public MoviesDataStore() {

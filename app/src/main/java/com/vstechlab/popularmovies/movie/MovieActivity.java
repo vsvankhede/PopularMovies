@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.vstechlab.popularmovies.R;
 import com.vstechlab.popularmovies.data.db.MoviesContract;
@@ -38,10 +37,10 @@ public class MovieActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            if (getIntent().getParcelableExtra(MovieFragment.DETAIL_URI) != null) {
-                arguments.putParcelable(MovieFragment.DETAIL_URI, getIntent().getData());
+            if (getIntent().getParcelableExtra(EXTRA_MOVIE) != null) {
+                arguments.putParcelable(MovieFragment.EXTRA_MOVIE, getIntent().getParcelableExtra(EXTRA_MOVIE));
             } else {
-                arguments.putParcelable(MovieFragment.EXTRA_MOVIE, getIntent().getData());
+                arguments.putParcelable(MovieFragment.DETAIL_URI, getIntent().getData());
             }
 
             MovieFragment fragment = new MovieFragment();
@@ -52,30 +51,9 @@ public class MovieActivity extends AppCompatActivity {
                     .commit();
         }
 
+
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_movie, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

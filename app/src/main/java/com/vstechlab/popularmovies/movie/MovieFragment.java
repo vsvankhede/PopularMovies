@@ -4,15 +4,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
+import android.transition.Scene;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +30,8 @@ import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.data.entity.Review;
 import com.vstechlab.popularmovies.data.entity.Trailer;
 import com.vstechlab.popularmovies.movies.Injection;
+import com.vstechlab.popularmovies.movies.MoviesPresenter;
+import com.vstechlab.popularmovies.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +46,7 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     public static final String EXTRA_MOVIE = "EXTRA_MOVIE";
     public static final String DETAIL_URI = "URI";
     private MovieContract.UserActionListener mUserActionListener;
+    private ShareActionProvider mShareActionProvider;
 
     private boolean mFavoriteMovie;
     private Button btnFavorite;
@@ -47,8 +58,10 @@ public class MovieFragment extends Fragment implements MovieContract.View {
     private TextView tvOverview;
 
     private ImageView ivPoster;
+    private ViewStub vsNoMovie;
 
     private ListView lvTrailer;
+    private ScrollView scrMovie;
 
     private Uri mUri;
 
@@ -78,7 +91,7 @@ public class MovieFragment extends Fragment implements MovieContract.View {
             if (arguments.getParcelable(EXTRA_MOVIE) != null) {
                 mMovie = arguments.getParcelable(EXTRA_MOVIE);
                 mFavoriteMovie = false;
-            } else{
+            } else {
                 mUri = arguments.getParcelable(DETAIL_URI);
                 mFavoriteMovie = true;
             }
@@ -86,6 +99,7 @@ public class MovieFragment extends Fragment implements MovieContract.View {
 
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
 
+        scrMovie = (ScrollView) view.findViewById(R.id.scr_holder);
         btnFavorite = (Button) view.findViewById(R.id.fragment_movie_btn_favorite);
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +113,12 @@ public class MovieFragment extends Fragment implements MovieContract.View {
         btnReadReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mUserActionListener.readReview(mMovie.getId());
+                if (mFavoriteMovie) {
+                    long movieId = ((MoviePresenter) mUserActionListener).getMovieId();
+                    mUserActionListener.readReview(movieId);
+                } else {
+                    mUserActionListener.readReview(mMovie.getId());
+                }
             }
         });
 
@@ -113,25 +132,67 @@ public class MovieFragment extends Fragment implements MovieContract.View {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if (mTrailerAdapter != null) {
-                    Trailer trailer = (Trailer)mTrailerAdapter.getItem(position);
+                    Trailer trailer = (Trailer) mTrailerAdapter.getItem(position);
                     mUserActionListener.launchYoutubeVideo(trailer.getKey());
                 }
             }
         });
+        vsNoMovie = (ViewStub) view.findViewById(R.id.vs_no_movie);
 
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_movie, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_share:
+                if (mTrailerAdapter != null) {
+                    if (!mTrailerAdapter.isEmpty()) {
+                        Trailer trailer = (Trailer) mTrailerAdapter.getItem(0);
+                        String videoUrl = Utils.createVideoUrl(trailer.getKey());
+                        startActivity(Intent
+                                .createChooser(createShareMovieIntent
+                                        (videoUrl), "Share Trailer!"));
+                    }
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Intent createShareMovieIntent(String url) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        return shareIntent;
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         if (mFavoriteMovie) {
+            scrMovie.setVisibility(View.VISIBLE);
             mUserActionListener.loadFavoriteMovieDetails(mUri);
+        } else if (mMovie != null) {
+            scrMovie.setVisibility(View.VISIBLE);
+            mUserActionListener.loadMovieDetails(mMovie);
         } else {
-            if(mMovie != null)
-                mUserActionListener.loadMovieDetails(mMovie);
+            showNoMovieView();
         }
+    }
+
+    private void showNoMovieView() {
+        scrMovie.setVisibility(View.GONE);
+        vsNoMovie.setLayoutResource(R.layout.no_movie_layout);
+        vsNoMovie.inflate();
     }
 
     @Override

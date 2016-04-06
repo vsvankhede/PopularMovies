@@ -9,6 +9,7 @@
     tools:context="com.vstechlab.popularmovies.movie.MovieFragment">
 
     <ScrollView
+        android:id="@+id/scr_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -130,5 +131,8 @@
 
         </LinearLayout>
     </ScrollView>
-
+    <ViewStub
+        android:id="@+id/vs_no_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

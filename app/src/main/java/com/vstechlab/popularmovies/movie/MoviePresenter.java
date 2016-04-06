@@ -17,6 +17,8 @@ import com.vstechlab.popularmovies.data.db.MoviesContract.FavoriteMovies;
 import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.data.entity.ReviewList;
 import com.vstechlab.popularmovies.data.entity.TrailerList;
+import com.vstechlab.popularmovies.movies.MoviesFragment;
+import com.vstechlab.popularmovies.utils.Utils;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -25,12 +27,13 @@ import retrofit.Retrofit;
 
 public class MoviePresenter implements MovieContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MoviePresenter.class.getSimpleName();
-    // Todo remove api key before commit
-    private static final String YOUTUBE_DEVELOPER_KEY = "AIzaSyC8XlfZeMzlB9nrrZ5tZ9JNbb7BRSI7p_s";
+
+    private static final String YOUTUBE_DEVELOPER_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
 
     private final MoviesRepository mMoviesRepository;
     private final MovieContract.View mMoviesView;
     private Uri mUri;
+    private long mMovieId;
 
     public MoviePresenter(@NonNull MoviesRepository mMoviesRepository, @NonNull MovieContract.View mMoviesView) {
         this.mMoviesView = mMoviesView;
@@ -77,14 +80,18 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
                 MovieFragment.FAVORITE_MOVIES_DETAIL_LOADER,
                 null,
                 this);
-        Log.d(LOG_TAG, "loadFavoriteMovieDetails.uri: " + uri.toString());
+        // Todo load review
     }
 
     @Override
     public void launchYoutubeVideo(String videoId) {
-        Intent intent = YouTubeStandalonePlayer.createVideoIntent(((MovieFragment)mMoviesView).getActivity(),
-                YOUTUBE_DEVELOPER_KEY, videoId);
-        ((MovieFragment)mMoviesView).startActivity(intent);
+        if (Utils.isAppInstalled("com.google.android.youtube", ((MovieFragment)mMoviesView).getActivity())) {
+            Intent intent = YouTubeStandalonePlayer.createVideoIntent(((MovieFragment)mMoviesView).getActivity(),
+                    YOUTUBE_DEVELOPER_KEY, videoId);
+            ((MovieFragment)mMoviesView).startActivity(intent);
+        } else {
+            ((MovieFragment)mMoviesView).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.createVideoUrl(videoId))));
+        }
     }
 
     @Override
@@ -152,6 +159,7 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
+            int COL_MOVIE_ID = data.getColumnIndex(FavoriteMovies.COLUMN_MOVIE_KEY);
             int COL_MOVIE_TITLE = data.getColumnIndex(FavoriteMovies.COLUMN_TITLE);
             int COL_MOVIE_POSTER = data.getColumnIndex(FavoriteMovies.COLUMN_POSTER);
             int COL_RELEASE_DATE = data.getColumnIndex(FavoriteMovies.COLUMN_RELEASE_DATE);
@@ -163,11 +171,18 @@ public class MoviePresenter implements MovieContract.UserActionListener, LoaderM
             mMoviesView.showTitle(data.getString(COL_MOVIE_TITLE));
             mMoviesView.showReleaseDate(data.getString(COL_RELEASE_DATE));
             mMoviesView.showVoteAverage(Double.parseDouble(data.getString(COL_AVERAGE_VOTE)));
+            mMovieId = data.getLong(COL_MOVIE_ID);
+
+            loadTrailers(mMovieId);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public long getMovieId() {
+        return mMovieId;
     }
 }
