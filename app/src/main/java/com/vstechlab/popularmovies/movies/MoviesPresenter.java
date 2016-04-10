@@ -13,6 +13,8 @@ import com.vstechlab.popularmovies.data.entity.MovieList;
 import com.vstechlab.popularmovies.data.net.MoviesApi;
 import com.vstechlab.popularmovies.utils.PreferenceHelper;
 
+import java.io.IOException;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -50,7 +52,10 @@ public class MoviesPresenter implements MoviesContract.UserActionListener, Loade
 
             @Override
             public void onFailure(Throwable t) {
-
+                if (t instanceof IOException) {
+                    mMoviesView.hideProgressIndicator();
+                    mMoviesView.showNoInternetView();
+                }
             }
         });
     }
@@ -76,7 +81,10 @@ public class MoviesPresenter implements MoviesContract.UserActionListener, Loade
 
             @Override
             public void onFailure(Throwable t) {
-
+                if (t instanceof IOException) {
+                    mMoviesView.hideProgressIndicator();
+                    mMoviesView.showNoInternetView();
+                }
             }
         });
 

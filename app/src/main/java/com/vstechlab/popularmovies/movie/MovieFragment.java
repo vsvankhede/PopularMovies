@@ -167,6 +167,8 @@ public class MovieFragment extends Fragment implements MovieContract.View {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private Intent createShareMovieIntent(String url) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);

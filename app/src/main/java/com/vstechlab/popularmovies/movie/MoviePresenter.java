@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.vstechlab.popularmovies.data.MoviesRepository;
@@ -28,7 +27,7 @@ import retrofit.Retrofit;
 public class MoviePresenter implements MovieContract.UserActionListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MoviePresenter.class.getSimpleName();
 
-    private static final String YOUTUBE_DEVELOPER_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXX";
+    private static final String YOUTUBE_DEVELOPER_KEY = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
     private final MoviesRepository mMoviesRepository;
     private final MovieContract.View mMoviesView;

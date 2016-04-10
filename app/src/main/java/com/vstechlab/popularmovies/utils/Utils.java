@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,5 +42,12 @@ public class Utils {
 
     public static String createVideoUrl(String videoId) {
         return "http://www.youtube.com/watch?v=" + videoId;
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activateNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activateNetworkInfo != null && activateNetworkInfo.isConnected();
     }
 }

@@ -22,6 +22,7 @@ public interface MoviesContract {
         void resetFavoriteMovies();
         void clearMovies();
         void updateMenu();
+        void showNoInternetView();
     }
 
     interface UserActionListener extends Presenter {

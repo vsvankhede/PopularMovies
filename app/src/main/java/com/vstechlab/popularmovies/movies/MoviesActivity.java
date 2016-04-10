@@ -1,6 +1,5 @@
 package com.vstechlab.popularmovies.movies;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.vstechlab.popularmovies.R;
-import com.vstechlab.popularmovies.data.db.*;
 import com.vstechlab.popularmovies.data.db.MoviesContract;
 import com.vstechlab.popularmovies.data.entity.Movie;
 import com.vstechlab.popularmovies.movie.MovieActivity;

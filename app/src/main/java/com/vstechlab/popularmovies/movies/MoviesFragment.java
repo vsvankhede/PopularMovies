@@ -3,8 +3,10 @@ package com.vstechlab.popularmovies.movies;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.vstechlab.popularmovies.R;
@@ -35,6 +39,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
     }
 
     private static final String LOG_TAG = MoviesFragment.class.getSimpleName();
+    private static final String EXTRA_MOVIES = "extra_movies";
     public static final int FAVORITE_MOVIES_LOADER = 0;
 
     private MoviesContract.UserActionListener mUserActionListener;
@@ -42,8 +47,10 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
     private List<Movie> mMoviesList = new ArrayList<>();
     private MoviesAdapter mMoviesAdapter;
     private FavoriteMoviesAdapter mFavoriteMoviesAdapter;
+    private LinearLayout llyNoInternet;
     private GridView mGvMovies;
     private Menu mMenu;
+    private Button btnRetry;
 
     public MoviesFragment() {
     }
@@ -58,7 +65,15 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
         mGvMovies = (GridView) view.findViewById(R.id.fragment_movies_gv_movies);
         mGvMovies.setAdapter(mMoviesAdapter);
         mGvMovies.setOnItemClickListener(movieClickListener);
-
+        llyNoInternet = (LinearLayout) view.findViewById(R.id.lly_nointernet);
+        btnRetry = (Button) view.findViewById(R.id.btn_retry);
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llyNoInternet.setVisibility(View.GONE);
+                loadMovies();
+            }
+        });
         mProgressBar = (ProgressBar) view.findViewById(R.id.fragment_movies_pgr);
 
         setHasOptionsMenu(true);
@@ -69,10 +84,26 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setRetainInstance(true);
-
         mUserActionListener = new MoviesPresenter(Injection.provideMoviesRepository(), this);
+
+        if (savedInstanceState != null) {
+            mMoviesList = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
+            showMovies(mMoviesList);
+        } else {
+            loadMovies();
+        }
+
+    }
+
+    private void loadMovies() {
+        if (getMoviePreference().equals(MoviesApi.sortByPopularity)) {
+            mUserActionListener.loadMoviesSortByPopularity();
+        } else if (getMoviePreference().equals(MoviesApi.sortByHighRated)) {
+            mUserActionListener.loadMoviesSortByRatting();
+        } else if (getMoviePreference().equals(MoviesApi.favorite)) {
+            mUserActionListener.loadFavoriteMovies(getActivity());
+        }
     }
 
     @Override
@@ -104,14 +135,13 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
     @Override
     public void onResume() {
         super.onResume();
-        // Todo get data from shared preference
-        if (getMoviePreference().equals(MoviesApi.sortByPopularity)) {
-            mUserActionListener.loadMoviesSortByPopularity();
-        } else if (getMoviePreference().equals(MoviesApi.sortByHighRated)) {
-            mUserActionListener.loadMoviesSortByRatting();
-        } else if (getMoviePreference().equals(MoviesApi.favorite)) {
-            mUserActionListener.loadFavoriteMovies(getActivity());
-        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(EXTRA_MOVIES,
+                (ArrayList<? extends Parcelable>) mMoviesAdapter.getMovieList());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -161,6 +191,11 @@ public class MoviesFragment extends Fragment implements MoviesContract.View{
             mMenu.findItem(R.id.action_sort_rate).setVisible(true);
             mMenu.findItem(R.id.action_favorite).setVisible(false);
         }
+    }
+
+    @Override
+    public void showNoInternetView() {
+        llyNoInternet.setVisibility(View.VISIBLE);
     }
 
     @Override

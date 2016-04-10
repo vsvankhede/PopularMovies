@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.vstechlab.popularmovies.data.entity.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesAdapter extends BaseAdapter {
@@ -57,5 +58,9 @@ public class MoviesAdapter extends BaseAdapter {
     public void setMovieList(List<Movie> movieList) {
         mMovieList = movieList;
         notifyDataSetChanged();
+    }
+
+    public List<Movie> getMovieList() {
+        return mMovieList;
     }
 }
